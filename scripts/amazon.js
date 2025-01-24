@@ -1,4 +1,4 @@
-import {cart} from '../data/cart.js';
+import {cart,addtocart} from '../data/cart.js';
 import {products} from '../data/products.js';
 let content='';
 products.forEach((product) => {
@@ -51,32 +51,19 @@ products.forEach((product) => {
       </button>
       </div>`
 })
-document.querySelector('.products-grid').innerHTML=content
-document.querySelectorAll('.add-to-cart-button').forEach((button)=>{
-  button.addEventListener('click',()=>{
-  const productid=button.dataset.productId;
-  let matchingItem;
-  let selected=document.querySelector(`.product-quantity-container select[data-product-id="${productid}"]`).value
-  selected=Number(selected)
-  cart.forEach((item)=>{
-    if (item.id==productid){
-      matchingItem=item;
-    }})
-    if (matchingItem){
-      matchingItem.quantity+=selected
-      console.log(cart)
-    }
-    else{ 
-      cart.push({id:productid,quantity:selected})
-      console.log(cart)
-      
-    }
-    let totalquantity=0;
+function updatecartquantity(){
+  let totalquantity=0;
     cart.forEach((item)=>{
       totalquantity+=item.quantity
     })
     let cartText=document.querySelector('.cart-quantity')
     cartText.innerHTML=totalquantity
-    
+}
+document.querySelector('.products-grid').innerHTML=content
+document.querySelectorAll('.add-to-cart-button').forEach((button)=>{
+  button.addEventListener('click',()=>{
+  const productid=button.dataset.productId;
+  addtocart(productid)
+  updatecartquantity()
     })})
 
