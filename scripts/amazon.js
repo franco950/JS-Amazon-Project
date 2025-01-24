@@ -1,8 +1,3 @@
-const products=[{image:'images/products/athletic-cotton-socks-6-pairs.jpg',name:'Black and Gray Athletic Cotton Socks - 6 Pairs',price:1090,rating:{count:87,stars:4.5}},
-    {image:'images/products/intermediate-composite-basketball.jpg',name:'Intermediate Size Basketball',price:2095,rating:{count:127,stars:4.0}},
-    {image:'images/products/adults-plain-cotton-tshirt-2-pack-teal.jpg',name:'Adults Plain Cotton T-Shirt - 2 Pack',price:799,rating:{count:56,stars:4.5}},
-    {image:'images/products/countertop-blender-64-oz.jpg',name:'Adults Plain Cotton T-Shirt - 2 Pack',price:1090,rating:{count:87,stars:4.5}},
-]
 let content='';
 products.forEach((product) => {
     content+=`<div class="product-container">
@@ -24,11 +19,11 @@ products.forEach((product) => {
     </div>
 
     <div class="product-price">
-      $${(product.price/100).toFixed(2)}
+      $${(product.priceCents/100).toFixed(2)}
     </div>
 
     <div class="product-quantity-container">
-      <select>
+      <select data-product-id='${product.id}'>
         <option selected value="1">1</option>
         <option value="2">2</option>
         <option value="3">3</option>
@@ -49,10 +44,38 @@ products.forEach((product) => {
       Added
     </div>
 
-    <button class="add-to-cart-button button-primary">
+    <button class="add-to-cart-button button-primary" data-product-id='${product.id}'>
       Add to Cart
       </button>
       </div>`
 })
-document.querySelector('.products-grid').innerHTML+=content
+document.querySelector('.products-grid').innerHTML=content
+document.querySelectorAll('.add-to-cart-button').forEach((button)=>{
+  button.addEventListener('click',()=>{
+  const productid=button.dataset.productId;
+  let matchingItem;
+  let selected=document.querySelector(`.product-quantity-container select[data-product-id="${productid}"]`).value
+  selected=Number(selected)
+  cart.forEach((item)=>{
+    if (item.id==productid){
+      matchingItem=item;
+    }})
+    if (matchingItem){
+      matchingItem.quantity+=selected
+      console.log(cart)
+    }
+    else{ 
+      cart.push({id:productid,quantity:selected})
+      console.log(cart)
+      
+    }
+    })})
+    
 
+  /*const selected=document.querySelector('.selectquantity').value
+  const select=selected.value
+  console.log(select)*/
+  
+    
+
+console.log(cart)
