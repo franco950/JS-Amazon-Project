@@ -14,7 +14,7 @@ cart.forEach((element) => {
   }
 })
 selected.forEach((item) => {
-    pagetext+=`<div class="cart-item-container">
+    pagetext+=`<div class="cart-item-container" id=${item.id}>
 <div class="delivery-date">
   Delivery date: Tuesday, June 21
 </div>
@@ -37,7 +37,7 @@ selected.forEach((item) => {
       <span class="update-quantity-link link-primary">
         Update
       </span>
-      <span class="delete-quantity-link link-primary">
+      <span class="delete-quantity-link link-primary" id=${item.id}>
         Delete
       </span>
     </div>
@@ -91,3 +91,31 @@ selected.forEach((item) => {
 </div>`
 })
 checkout.innerHTML=pagetext
+function updatecheckout(){
+    let total=document.querySelector('.return-to-home-link')
+    let quantity=0;
+    cart.forEach((item) =>{
+        quantity+=item.quantity
+    })
+    total.innerHTML=quantity+' items'
+}
+updatecheckout()
+document.querySelectorAll('.delete-quantity-link').forEach((button)=>{
+    button.addEventListener("click",()=>{
+        let id=button.id
+        console.log(id)
+        deleteitem(id)})})
+function deleteitem(id){
+    const index=cart.findIndex((stuff)=>stuff.id==id)
+    if (index !==-1){
+        cart.splice(index,1) 
+        console.log(cart) 
+    }
+    else{
+        console.log('something went wrong')
+    }
+    localStorage.setItem('cart',JSON.stringify(cart))  
+    let cartitem=document.getElementById(id)
+    cartitem.remove()
+    updatecheckout()
+}
