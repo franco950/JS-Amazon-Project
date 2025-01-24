@@ -69,13 +69,11 @@ document.querySelectorAll('.add-to-cart-button').forEach((button)=>{
       console.log(cart)
       
     }
+    let totalquantity=0;
+    cart.forEach((item)=>{
+      totalquantity+=item.quantity
+    })
+    cartText=document.querySelector('.cart-quantity')
+    cartText.innerHTML=totalquantity
     })})
-    
 
-  /*const selected=document.querySelector('.selectquantity').value
-  const select=selected.value
-  console.log(select)*/
-  
-    
-
-console.log(cart)
