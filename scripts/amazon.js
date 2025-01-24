@@ -53,6 +53,7 @@ products.forEach((product) => {
 })
 function updatecartquantity(){
   let totalquantity=0;
+  console.log(cart)
     cart.forEach((item)=>{
       totalquantity+=item.quantity
     })
@@ -66,4 +67,4 @@ document.querySelectorAll('.add-to-cart-button').forEach((button)=>{
   addtocart(productid)
   updatecartquantity()
     })})
-
+    updatecartquantity()

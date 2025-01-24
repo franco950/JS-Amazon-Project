@@ -1,4 +1,4 @@
-export const cart=[]
+export let cart= JSON.parse(localStorage.getItem('cart'))||[];
 export function addtocart(productid){
   let matchingItem;
   let selected=document.querySelector(`.product-quantity-container select[data-product-id="${productid}"]`).value
@@ -9,10 +9,13 @@ export function addtocart(productid){
     }})
     if (matchingItem){
       matchingItem.quantity+=selected
-      console.log(cart)
+      //console.log(cart)
     }
     else{ 
       cart.push({id:productid,quantity:selected})
-      console.log(cart)
+      //console.log(cart)
     }
+
+  localStorage.setItem('cart', JSON.stringify(cart));
+
 }
