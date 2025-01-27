@@ -1,4 +1,4 @@
-import {products} from "../data/products.js";
+import {products,loadProductsFetch} from "../data/products.js";
 import{cart} from "../data/cart.js"
 let pagetext='';
 let checkout=document.querySelector('.order-summary')
@@ -10,7 +10,7 @@ cart.forEach((element) => {
     // Get the product and update quantity
     const product = productsMap.get(element.id);
     product.quantity = element.quantity;
-    selected.push(product); // Add updated product to the selected array
+    selected.push(product); 
   }
 })
 selected.forEach((item) => {
