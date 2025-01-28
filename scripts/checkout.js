@@ -8,7 +8,13 @@ let selected = [];
     getlist()
     
     renderHtml()
+    deletebtn()
   })
+function getdate(days){
+  const today=dayjs()
+ const getdate=today.add(days,'days')
+}
+ 
 function getlist(){
 const productsMap = new Map(products.map((item) => [item.id, { ...item }]));
 cart.forEach((element) => {
@@ -111,11 +117,14 @@ function updatecheckout(){
     total.innerHTML=quantity+' items'
 }
 updatecheckout()
-document.querySelectorAll('.delete-quantity-link').forEach((button)=>{
+function deletebtn(){
+  document.querySelectorAll('.delete-quantity-link').forEach((button)=>{
     button.addEventListener("click",()=>{
         let id=button.id
         console.log(id)
         deleteitem(id)})})
+}
+
 function deleteitem(id){
     const index=cart.findIndex((stuff)=>stuff.id==id)
     if (index !==-1){
