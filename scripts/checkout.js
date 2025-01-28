@@ -4,6 +4,7 @@ let pagetext='';
 let checkout=document.querySelector('.order-summary')
 let selected = [];
 // Create a Map for quick lookups
+  loadProductsFetch()
 const productsMap = new Map(products.map((item) => [item.id, { ...item }]));
 cart.forEach((element) => {
   if (productsMap.has(element.id)) {

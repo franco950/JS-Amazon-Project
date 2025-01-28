@@ -1,6 +1,8 @@
 import {cart,addtocart} from '../data/cart.js';
-import {products} from '../data/products.js';
+import {products,loadProductsFetch} from '../data/products.js';
 let content='';
+loadProductsFetch()
+console.log(products)
 products.forEach((product) => {
     content+=`<div class="product-container">
     <div class="product-image-container">
