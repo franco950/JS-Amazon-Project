@@ -49,6 +49,7 @@ export function loadProductsFetch() {
 
   return promise;
 }
+loadProductsFetch()
 /*
 export function loadProducts(fun) {
   const xhr = new XMLHttpRequest();
