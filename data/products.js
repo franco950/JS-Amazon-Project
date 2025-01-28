@@ -37,11 +37,8 @@ export function loadProductsFetch() {
     return response.json();
   }).then((productsData) => {
     products = productsData.map((productDetails) => {
-      console.log('load products');
-     
       return new Product(productDetails);
-      
-    }); console.log(products)
+    }); 
     
   }).catch((error) => {
     console.log('Unexpected error. Please try again later.');
@@ -49,7 +46,7 @@ export function loadProductsFetch() {
 
   return promise;
 }
-loadProductsFetch()
+
 /*
 export function loadProducts(fun) {
   const xhr = new XMLHttpRequest();

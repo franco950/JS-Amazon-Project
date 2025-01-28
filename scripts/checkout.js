@@ -6,20 +6,21 @@ let selected = [];
 // Create a Map for quick lookups
   loadProductsFetch().then(()=>{
     getlist()
+    
     renderHtml()
   })
-  function getlist(){
-    const productsMap = new Map(products.map((item) => [item.id, { ...item }]));
+function getlist(){
+const productsMap = new Map(products.map((item) => [item.id, { ...item }]));
 cart.forEach((element) => {
   if (productsMap.has(element.id)) {
     // Get the product and update quantity
     const product = productsMap.get(element.id);
     product.quantity = element.quantity;
-    selected.push(product); 
-  }
-})
+    selected.push(product); }
+  })
   }
   function renderHtml(){
+    
     selected.forEach((item) => {
       pagetext+=`<div class="cart-item-container" id=${item.id}>
   <div class="delivery-date">
@@ -101,6 +102,7 @@ cart.forEach((element) => {
   }
 
 function updatecheckout(){
+
     let total=document.querySelector('.return-to-home-link')
     let quantity=0;
     cart.forEach((item) =>{

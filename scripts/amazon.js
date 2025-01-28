@@ -2,6 +2,7 @@ import {cart,addtocart} from '../data/cart.js';
 import {products,loadProductsFetch} from '../data/products.js';
 loadProductsFetch().then(()=>{
     renderHomepage()
+    addlistener()
   })
 function renderHomepage(){
   let content='';
@@ -60,18 +61,20 @@ function renderHomepage(){
 
 function updatecartquantity(){
   let totalquantity=0;
-  console.log(cart)
+  
     cart.forEach((item)=>{
       totalquantity+=item.quantity
     })
     let cartText=document.querySelector('.cart-quantity')
     cartText.innerHTML=totalquantity
 }
-
-document.querySelectorAll('.add-to-cart-button').forEach((button)=>{
-  button.addEventListener('click',()=>{
-  const productid=button.dataset.productId;
-  addtocart(productid)
-  updatecartquantity()
-    })})
+function addlistener(){
+  document.querySelectorAll('.add-to-cart-button').forEach((button)=>{
+    button.addEventListener('click',()=>{
+    const productid=button.dataset.productId;
+    addtocart(productid)
     updatecartquantity()
+      })})
+      
+}
+updatecartquantity()
