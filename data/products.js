@@ -16,6 +16,8 @@ class Product {
   name;
   rating;
   priceCents;
+  deliverydate;
+  days;
 
   constructor(productDetails) {
     this.id = productDetails.id;
@@ -24,6 +26,7 @@ class Product {
     this.rating = productDetails.rating;
     this.priceCents = productDetails.priceCents;
     this.deliverydate;
+    this.days;
   }
 
 }

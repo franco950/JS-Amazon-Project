@@ -1,0 +1,1 @@
+export const shippingdetails={1:999,3:499,7:'FREE'}
