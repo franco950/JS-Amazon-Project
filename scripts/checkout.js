@@ -16,10 +16,7 @@ let selected = [];
     
   })
 function selectdate(){
-  let summarytext=document.querySelector('.payment-summary')
-  summarytext.innerHTML=''
-  let pretext=`<button class="place-order-button confirmorderbutton button-primary">
-      confirm </button>`
+  
   const today=dayjs()
   let dayscount=0;
   document.querySelectorAll('.delivery-option-input').forEach((input)=>{
@@ -36,7 +33,7 @@ function selectdate(){
           item.days=checked
           console.log('days supposed to be '+checked)
           console.log(item.days)
-          if (dayscount==selected.length){summarytext.innerHTML=pretext;prerenderpayment()}
+          if (dayscount==selected.length){prerenderpayment()}
         }
       })
       itemId=CSS.escape(itemId)
@@ -61,7 +58,9 @@ cart.forEach((element) => {
     // Get the product and update quantity
     const product = productsMap.get(element.id);
     product.quantity = element.quantity;
+    
     selected.push(product); }
+    console.log(selected)
   })
   }
   function renderHtml(){
@@ -167,21 +166,33 @@ function deleteitem(id){
     const index=cart.findIndex((stuff)=>stuff.id==id)
     if (index !==-1){
         cart.splice(index,1) 
-        console.log('cart'+cart)
-        console.log('selected list'+selected)
-        getlist()
-        renderPaymentSummary()
+        localStorage.setItem('cart',JSON.stringify(cart))
+        console.log('selected before deleting'+selected)
+        const selectedindex=selected.findIndex((item)=>item.id==id)
+        if (selectedindex !==-1){
+        selected.splice(selectedindex,1) }
+        console.log('selected after deleting'+selected)
+        let cartitem=document.getElementById(id)
+        cartitem.remove()
+        updatecheckout()
+        prerenderpayment()
+        
         console.log('selected after getlist'+selected)
     }
     else{
         console.log('something went wrong')
     }
-    localStorage.setItem('cart',JSON.stringify(cart))  
-    let cartitem=document.getElementById(id)
-    cartitem.remove()
-    updatecheckout()
+      
+    
+    
+    
 }
 function prerenderpayment(){ 
+  let pretext=`<button class="place-order-button confirmorderbutton button-primary">
+      confirm </button>`
+  let summarytext=document.querySelector('.payment-summary')
+  summarytext.innerHTML=pretext
+  
   let quantity=0;
   cart.forEach((item) =>{
       quantity+=item.quantity
@@ -191,6 +202,7 @@ let shippingtotal=0;
 let tax=0;
 let paymentdata=[]
 selected.forEach((item)=>{
+  console.log('selected in prerender'+selected)
   total+=(item.priceCents*item.quantity)
   console.log(total)
   let shippingkey=item.days
