@@ -1,10 +1,15 @@
 import {cart,addtocart} from '../data/cart.js';
-import {products,loadProductsFetch} from '../data/products.js';
-loadProductsFetch().then(()=>{
+//import {products,loadProductsFetch} from '../data/products.js';
+import {products} from "../data/productslist.js";
+
+/*loadProductsFetch().then(()=>{ 
     renderHomepage()
     addlistener()
-  })
+  })*/
+  renderHomepage()
+    addlistener()
 function renderHomepage(){
+ 
   let content='';
   products.forEach((product) => {
       content+=`<div class="product-container">

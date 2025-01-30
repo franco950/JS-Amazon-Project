@@ -1,22 +1,25 @@
-import {products,loadProductsFetch} from "../data/products.js";
+//import {products,loadProductsFetch} from "../data/products.js";
+import {products} from "../data/productslist.js";
 import{cart} from "../data/cart.js"
 import { shippingdetails } from "../data/shipping.js";
-console.log(dayjs)
 
-let pagetext='';
 let checkout=document.querySelector('.order-summary')
-let selected = [];
-// Create a Map for quick lookups
-  loadProductsFetch().then(()=>{
-    getlist()
-    renderHtml()
-    deletebtn()
-    selectdate()
-    
-    
-  })
+let summarytext=document.querySelector('.payment-summary')
+const selected = [];
+
+/*loadProductsFetch().then(()=>{
+  getlist()
+  renderHtml()
+  deletebtn()
+  selectdate()
+})*/
+getlist()
+  renderHtml()
+  deletebtn()
+  selectdate()
+  updatecheckout()
+
 function selectdate(){
-  
   const today=dayjs()
   let dayscount=0;
   document.querySelectorAll('.delivery-option-input').forEach((input)=>{
@@ -25,24 +28,20 @@ function selectdate(){
       const days=today.add(checked,'days')
       const newdate=days.format('dddd MMMM D')
       let itemId = input.dataset.id
-      
       selected.forEach((item)=>{
         if (itemId==item.id){
           dayscount+=1
           item.deliverydate=newdate
           item.days=checked
-          console.log('days supposed to be '+checked)
-          console.log(item.days)
           if (dayscount==selected.length){prerenderpayment()}
         }
       })
       itemId=CSS.escape(itemId)
       const date = document.querySelector(`#${itemId} .delivery-date`);
       date.innerHTML=`Delivery date: ${newdate}`
-      console.log(selected)})})
-      
-      }
-
+    })
+  })      
+}
 
 function getday(num){
   const today=dayjs()
@@ -55,16 +54,13 @@ function getlist(){
 const productsMap = new Map(products.map((item) => [item.id, { ...item }]));
 cart.forEach((element) => {
   if (productsMap.has(element.id)) {
-    // Get the product and update quantity
     const product = productsMap.get(element.id);
     product.quantity = element.quantity;
-    
     selected.push(product); }
-    console.log(selected)
   })
   }
   function renderHtml(){
-    
+    let pagetext=''
     selected.forEach((item) => {
       pagetext+=`<div class="cart-item-container" id=${item.id}>
   <div class="delivery-date">
@@ -143,90 +139,72 @@ cart.forEach((element) => {
   </div>`
   })
   checkout.innerHTML=pagetext
-  
-  }
-function updatecheckout(){
+}
 
-    let total=document.querySelector('.return-to-home-link')
-    let quantity=0;
-    cart.forEach((item) =>{
-        quantity+=item.quantity
-    })
-    total.innerHTML=quantity+' items'
+function updatecheckout(){
+  let total=document.querySelector('.return-to-home-link')
+  let quantity=0;
+  cart.forEach((item) =>{
+      quantity+=item.quantity
+  })
+  console.log(cart)
+  total.innerHTML=quantity+' items'
 }
-updatecheckout()
+
 function deletebtn(){
-  document.querySelectorAll('.delete-quantity-link').forEach((button)=>{
-    button.addEventListener("click",()=>{
-        let id=button.dataset.id
-        console.log(id)
-        deleteitem(id)})})
+  document.body.addEventListener("click", (event) => {
+    if (event.target.classList.contains("delete-quantity-link")) {
+      deleteitem(event.target.dataset.id);
+    }
+  });
 }
+
 function deleteitem(id){
     const index=cart.findIndex((stuff)=>stuff.id==id)
     if (index !==-1){
         cart.splice(index,1) 
         localStorage.setItem('cart',JSON.stringify(cart))
-        console.log('selected before deleting'+selected)
         const selectedindex=selected.findIndex((item)=>item.id==id)
         if (selectedindex !==-1){
-        selected.splice(selectedindex,1) }
-        console.log('selected after deleting'+selected)
+        selected.splice(selectedindex,1)}
         let cartitem=document.getElementById(id)
         cartitem.remove()
         updatecheckout()
         prerenderpayment()
-        
-        console.log('selected after getlist'+selected)
     }
     else{
         console.log('something went wrong')
     }
-      
-    
-    
-    
 }
+
 function prerenderpayment(){ 
-  let pretext=`<button class="place-order-button confirmorderbutton button-primary">
-      confirm </button>`
-  let summarytext=document.querySelector('.payment-summary')
+  let pretext=`<button class="place-order-button confirmorderbutton button-primary">confirm </button>`
   summarytext.innerHTML=pretext
-  
   let quantity=0;
-  cart.forEach((item) =>{
-      quantity+=item.quantity
-  })
-let total=0;
-let shippingtotal=0;
-let tax=0;
-let paymentdata=[]
-selected.forEach((item)=>{
-  console.log('selected in prerender'+selected)
-  total+=(item.priceCents*item.quantity)
-  console.log(total)
-  let shippingkey=item.days
-  console.log('worristhis'+item.days)
-  if(shippingdetails[shippingkey] !='FREE'){shippingtotal+=Number(shippingdetails[shippingkey])}})
+  let total=0;
+  let shippingtotal=0;
+  let tax=0;
+  selected.forEach((item)=>{
+    quantity+=item.quantity
+    total+=(item.priceCents*item.quantity)
+    let shippingkey=item.days
+    if(shippingdetails[shippingkey] !='FREE'){shippingtotal+=Number(shippingdetails[shippingkey])}})
   tax=(total+shippingtotal)*0.1
-  console.log('type oftax '+typeof(tax)+typeof(shippingtotal)+typeof(total))
-  paymentdata.push({shippingcost:shippingtotal},{total:total},{tax:tax})
   let overallcost=total+tax+shippingtotal;
   let order=document.querySelector('.confirmorderbutton')
   order.addEventListener('click',()=>{
-
-    if (typeof tax === "number" && !isNaN(tax))
-      {console.log('thisistax '+tax);renderPaymentSummary(quantity,total,shippingtotal,tax,overallcost)}
-    else{console.log('type oftax '+typeof(tax)+typeof(shippingtotal)+typeof(total));return alert('please fill deliverydate fields')}})
-  
+    if (typeof tax === "number" && !isNaN(tax)){
+      renderPaymentSummary(quantity,total,shippingtotal,tax,overallcost)}
+    else{
+      return alert('please fill deliverydate fields')}})
 }
+
 function decimate(num){
   let decimated=(num/100).toFixed(2)
   return decimated
-  
 }
+
 function renderPaymentSummary(quantity,total,shippingtotal,tax,overallcost){
-  let summarytext=document.querySelector('.payment-summary')
  let innertext=`<div class="payment-summary-title">
   Order Summary
 </div>
@@ -260,15 +238,13 @@ function renderPaymentSummary(quantity,total,shippingtotal,tax,overallcost){
 </button>`
 summarytext.innerHTML=innertext
 let orderbutton=document.querySelector('.finalorder')
-orderbutton.addEventListener('click',()=>{
-  sendorder()})}
+orderbutton.addEventListener('click',()=>{sendorder()})}
 
 function sendorder(){
   const promise = fetch(
     'https://supersimplebackend.dev/orders', {method:'POST',headers: {
     "Content-Type": "application/json"},body: JSON.stringify(selected) }
   ).then((response) => {
-    console.log(response.json())
     return response.json();
   }).catch((error) => {
     console.log('Unexpected order post error. Please try again later.'+error);})
