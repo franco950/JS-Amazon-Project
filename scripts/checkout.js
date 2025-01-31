@@ -22,9 +22,10 @@ getlist()
 function selectdate(){
   const today=dayjs()
   let dayscount=0;
-  document.querySelectorAll('.delivery-option-input').forEach((input)=>{
-    input.addEventListener("change",()=>{
-      let checked=input.value
+  document.body.addEventListener("change", (event) => {
+    if (event.target.classList.contains("delivery-option-input")) {
+      const input = event.target;
+      let checked = input.value;
       const days=today.add(checked,'days')
       const newdate=days.format('dddd MMMM D')
       let itemId = input.dataset.id
@@ -39,7 +40,7 @@ function selectdate(){
       itemId=CSS.escape(itemId)
       const date = document.querySelector(`#${itemId} .delivery-date`);
       date.innerHTML=`Delivery date: ${newdate}`
-    })
+    }
   })      
 }
 
@@ -52,17 +53,26 @@ function getday(num){
 
 function getlist(){
 const productsMap = new Map(products.map((item) => [item.id, { ...item }]));
-cart.forEach((element) => {
+selected.length = 0;
+selected.push(...cart.filter(item => productsMap.has(item.id)).map(item => ({
+  ...productsMap.get(item.id),
+  quantity: item.quantity
+})));
+//faster
+/*cart.forEach((element) => {
   if (productsMap.has(element.id)) {
     const product = productsMap.get(element.id);
     product.quantity = element.quantity;
     selected.push(product); }
-  })
+  })*/
   }
   function renderHtml(){
-    let pagetext=''
+    let fragment = document.createDocumentFragment();
     selected.forEach((item) => {
-      pagetext+=`<div class="cart-item-container" id=${item.id}>
+      let div = document.createElement("div");
+      div.classList.add("cart-item-container");
+      div.id = item.id;
+      div.innerHTML=`<div class="cart-item-container" id=${item.id}>
   <div class="delivery-date">
     Delivery date: no date selected
   </div>
@@ -137,8 +147,10 @@ cart.forEach((element) => {
     </div>
   </div>
   </div>`
-  })
-  checkout.innerHTML=pagetext
+  fragment.appendChild(div);
+  });
+  checkout.innerHTML = ""; 
+  checkout.appendChild(fragment);
 }
 
 function updatecheckout(){
@@ -241,11 +253,12 @@ let orderbutton=document.querySelector('.finalorder')
 orderbutton.addEventListener('click',()=>{sendorder()})}
 
 function sendorder(){
+  const orderData = selected.map(({ id, quantity, deliverydate,days }) => ({ id, quantity, deliverydate, days }));
+  
   const promise = fetch(
     'https://supersimplebackend.dev/orders', {method:'POST',headers: {
-    "Content-Type": "application/json"},body: JSON.stringify(selected) }
+    "Content-Type": "application/json"},body: JSON.stringify(orderData) }
   ).then((response) => {
     return response.json();
   }).catch((error) => {
-    console.log('Unexpected order post error. Please try again later.'+error);})
-  return promise}
+    console.log('Unexpected order post error. Please try again later.'+error);})}
