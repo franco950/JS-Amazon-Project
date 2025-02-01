@@ -1,5 +1,5 @@
-//import {products,loadProductsFetch} from "../data/products.js";
-import {products} from "../data/productslist.js";
+import {products,loadProductsFetch} from "../data/products.js";
+//import {productlist} from "../data/productslist.js";
 import{cart} from "../data/cart.js"
 import { shippingdetails } from "../data/shipping.js";
 
@@ -7,17 +7,17 @@ let checkout=document.querySelector('.order-summary')
 let summarytext=document.querySelector('.payment-summary')
 const selected = [];
 
-/*loadProductsFetch().then(()=>{
+loadProductsFetch().then(()=>{
   getlist()
   renderHtml()
   deletebtn()
   selectdate()
-})*/
+})/*use this to get products locally
 getlist()
   renderHtml()
   deletebtn()
   selectdate()
-  updatecheckout()
+  updatecheckout()*/
 
 function selectdate(){
   const today=dayjs()
