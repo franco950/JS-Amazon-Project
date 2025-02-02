@@ -12,4 +12,15 @@ const productSchema=mongoose.Schema({
     days:{type:Number}
 },{timestamps:true})
 const Product=mongoose.model('Product',productSchema)
-module.exports = Product;
+const orderSchema=mongoose.Schema({
+    userid:{type:String,required:true},
+    products:{type:Array,required:true},
+    overallcost:{type:Number,required:true},
+    status:{type:String,required:true}
+},{timestamps:true})
+const Order=mongoose.model('Order',orderSchema)
+module.exports = {
+    Product,
+    Order
+  };
+  

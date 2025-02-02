@@ -12,6 +12,7 @@ loadProductsFetch().then(()=>{
   renderHtml()
   deletebtn()
   selectdate()
+  updatecheckout()
 })/*use this to get products locally
 getlist()
   renderHtml()
@@ -203,6 +204,7 @@ function prerenderpayment(){
     if(shippingdetails[shippingkey] !='FREE'){shippingtotal+=Number(shippingdetails[shippingkey])}})
   tax=(total+shippingtotal)*0.1
   let overallcost=total+tax+shippingtotal;
+  selected.push(overallcost)
   let order=document.querySelector('.confirmorderbutton')
   order.addEventListener('click',()=>{
     if (typeof tax === "number" && !isNaN(tax)){
@@ -252,13 +254,24 @@ summarytext.innerHTML=innertext
 let orderbutton=document.querySelector('.finalorder')
 orderbutton.addEventListener('click',()=>{sendorder()})}
 
-function sendorder(){
+function sendorder(){ 
+  if (!selected || selected.length === 0) {
+    console.error("Error: No products selected.");
+    return;
+  }
   const orderData = selected.map(({ id, quantity, deliverydate,days }) => ({ id, quantity, deliverydate, days }));
-  
-  const promise = fetch(
-    'https://supersimplebackend.dev/orders', {method:'POST',headers: {
-    "Content-Type": "application/json"},body: JSON.stringify(orderData) }
-  ).then((response) => {
+  let overallcost=selected[selected.length - 1];
+  console.log(overallcost)
+  const order={userid:"9500",products:orderData,overallcost:overallcost,status:"preparing"}
+  console.log(order)
+  fetch(
+    'http://localhost:3000/api/orders', {method:'POST',headers: {
+    "Content-Type": "application/json"},body: JSON.stringify(order) }
+  ).then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP Error! Status: ${response.status}`);
+    }else{console.log('order sent!')}
     return response.json();
-  }).catch((error) => {
+  }).then(data => console.log("Order response:", data)).catch((error) => {
     console.log('Unexpected order post error. Please try again later.'+error);})}
+ 
