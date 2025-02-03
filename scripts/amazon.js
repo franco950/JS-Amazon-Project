@@ -1,13 +1,10 @@
 import {cart,addtocart} from '../data/cart.js';
 import {products,loadProductsFetch} from '../data/products.js';
-//import {productlist} from "../data/productslist.js";
 
 loadProductsFetch().then(()=>{ 
     renderHomepage()
     addlistener()
-  })/*use this to get products locally
-  renderHomepage()
-    addlistener()*/
+  })
 function renderHomepage(){
  
   let content='';

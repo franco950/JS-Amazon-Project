@@ -1,25 +1,19 @@
 import {products,loadProductsFetch} from "../data/products.js";
-//import {productlist} from "../data/productslist.js";
 import{cart} from "../data/cart.js"
 import { shippingdetails } from "../data/shipping.js";
 
 let checkout=document.querySelector('.order-summary')
 let summarytext=document.querySelector('.payment-summary')
 const selected = [];
-
+function loadpage(){
 loadProductsFetch().then(()=>{
   getlist()
   renderHtml()
   deletebtn()
   selectdate()
   updatecheckout()
-})/*use this to get products locally
-getlist()
-  renderHtml()
-  deletebtn()
-  selectdate()
-  updatecheckout()*/
-
+})}
+loadpage()
 function selectdate(){
   const today=dayjs()
   let dayscount=0;
@@ -28,7 +22,7 @@ function selectdate(){
       const input = event.target;
       let checked = input.value;
       const days=today.add(checked,'days')
-      const newdate=days.format('dddd MMMM D')
+      let newdate=days.format('dddd MMMM D')
       let itemId = input.dataset.id
       selected.forEach((item)=>{
         if (itemId==item.id){
@@ -59,23 +53,18 @@ selected.push(...cart.filter(item => productsMap.has(item.id)).map(item => ({
   ...productsMap.get(item.id),
   quantity: item.quantity
 })));
-//faster
-/*cart.forEach((element) => {
-  if (productsMap.has(element.id)) {
-    const product = productsMap.get(element.id);
-    product.quantity = element.quantity;
-    selected.push(product); }
-  })*/
+
   }
   function renderHtml(){
     let fragment = document.createDocumentFragment();
     selected.forEach((item) => {
+      console.log(item.deliverydate)
       let div = document.createElement("div");
       div.classList.add("cart-item-container");
       div.id = item.id;
       div.innerHTML=`<div class="cart-item-container" id=${item.id}>
   <div class="delivery-date">
-    Delivery date: no date selected
+    Delivery date: No date selected
   </div>
   
   <div class="cart-item-details-grid">
@@ -182,9 +171,7 @@ function deleteitem(id){
         selected.splice(selectedindex,1)}
         let cartitem=document.getElementById(id)
         cartitem.remove()
-        updatecheckout()
-        prerenderpayment()
-    }
+        loadpage()}
     else{
         console.log('something went wrong')
     }
@@ -197,6 +184,7 @@ function prerenderpayment(){
   let total=0;
   let shippingtotal=0;
   let tax=0;
+  if (cart.length==0){pretext=''}
   selected.forEach((item)=>{
     quantity+=item.quantity
     total+=(item.priceCents*item.quantity)
@@ -250,6 +238,7 @@ function renderPaymentSummary(quantity,total,shippingtotal,tax,overallcost){
 <button class="place-order-button finalorder button-primary">
   Place your order
 </button>`
+
 summarytext.innerHTML=innertext
 let orderbutton=document.querySelector('.finalorder')
 orderbutton.addEventListener('click',()=>{sendorder()})}
@@ -261,16 +250,23 @@ function sendorder(){
   }
   const orderData = selected.map(({ id, quantity, deliverydate,days }) => ({ id, quantity, deliverydate, days }));
   let overallcost=selected[selected.length - 1];
-  console.log(overallcost)
   const order={userid:"9500",products:orderData,overallcost:overallcost,status:"preparing"}
-  console.log(order)
   fetch(
     'http://localhost:3000/api/orders', {method:'POST',headers: {
     "Content-Type": "application/json"},body: JSON.stringify(order) }
   ).then(response => {
     if (!response.ok) {
       throw new Error(`HTTP Error! Status: ${response.status}`);
-    }else{console.log('order sent!')}
+    }else{console.log('order sent!')
+      alert('order sent successfully')
+      cart.length=0
+      localStorage.setItem('cart',JSON.stringify(cart))
+      loadpage()
+      let backhome=document.querySelector('.payment-summary')
+      backhome.innerHTML=`<p>No items in cart</p><a href='amazon.html'><button class="place-order-button finalorder button-primary">
+        Back to homepage
+       </button></a>`
+    }
     return response.json();
   }).then(data => console.log("Order response:", data)).catch((error) => {
     console.log('Unexpected order post error. Please try again later.'+error);})}

@@ -24,5 +24,15 @@ async function addOrders(orderData) {
     mongoose.connection.close();  
   }
 }
+async function searchProducts(...args) {
+  try {
+    await Order.find({...args});
+    console.log('Order found!');
+  } catch (error) {
+    console.error('Error finding order:', error);
+  } finally {
+    mongoose.connection.close();  
+  }
+}
 
 module.exports=addOrders
