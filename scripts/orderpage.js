@@ -61,11 +61,11 @@ function renderpage(){
         </div>
 
         <div class="product-actions">
-          <a href="tracking.html">
+          <!--<a href="tracking.html">
             <button class="track-package-button button-secondary">
               Track package
             </button>
-          </a>
+          </a>-->
         </div>
       </div>`
       div.innerHTML+=productHTML}})

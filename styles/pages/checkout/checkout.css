@@ -13,7 +13,10 @@
   margin-left: auto;
   margin-right: auto;
 }
-
+.cartempty{
+  margin-left: auto;
+  margin-right: auto;
+}
 .page-title {
   font-weight: 700;
   font-size: 22px;

@@ -57,6 +57,14 @@ selected.push(...cart.filter(item => productsMap.has(item.id)).map(item => ({
   }
   function renderHtml(){
     let fragment = document.createDocumentFragment();
+    if (cart.length==0){
+      let backtitle=document.querySelector('.page-title')
+      backtitle.innerHTML=`There are no items in your cart`
+      let backhome=document.querySelector('.checkout-grid')
+      backhome.innerHTML=`<p><a href='amazon.html'><button class="place-order-button finalorder button-primary">
+        Back to homepage
+       </button></a></p>`
+    }
     selected.forEach((item) => {
       console.log(item.deliverydate)
       let div = document.createElement("div");
